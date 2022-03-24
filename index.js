@@ -2,27 +2,79 @@ const container= document.querySelector(".container");
 const todoForm= document.querySelector(".todo-form");
 const todoInput= document.querySelector("#inputTodo");
 const todoAddButton= document.querySelector("#addTodoButton");
-const todoLists= document.getElementById("Lists");
+const todoLists= document.getElementById("list");
+const messageElement= document.getElementById("message");
+
+//shoeMessage
+
+const shoeMessage=(text, status)=>{
+    messageElement.textContent= text;
+    messageElement.classList.add(`bg-${status}`);
+    setTimeout(()=>{
+        messageElement.textContent="";
+        messageElement.classList.remove(`bg-${status}`);
+
+
+    }, 1000);
+}
 
 //createTodo
 
 const createTodo=(todoId, todoValue)=>{
     const todoElement=document.createElement("li");
     todoElement.id= todoId;
-    todoElement.innerHTML=`<span>${todoValue}</span>
-    <span><button class="btn" id="deleteButton"><i class="fa fa-trash"></i></button> </span>`;
+    todoElement.classList.add("li-style")
+    todoElement.innerHTML=`
+    <span>${todoValue}</span>
+    <span><button class="btn" id="deleteButton"><i class="fa fa-trash"></i></button> </span>
+    `;
 
     todoLists.appendChild(todoElement);
+
+    const deleteButton= todoElement.querySelector("#deleteButton");
+    deleteButton.addEventListener("click", deleteTodo);
+};
+
+//deleteTodo
+const deleteTodo=(event)=>{
+    const selectedTodo= event.target.parentElement.parentElement.parentElement;
+    
+
+    todoLists.removeChild(selectedTodo);
+    shoeMessage("todo is deleted", "danger");
+
+    
+    let todos=getTodosFromLocalStorage();
+    todos= todos.filter((todo)=>todo.todoId == selectedTodo.id);
+    localStorage.setItem("mytodos", JSON.stringify(todos));
+
+};
+
+//gettodolocalstorage
+const getTodosFromLocalStorage=()=>{
+    return localStorage.getItem("mytodos")
+    ? JSON.parse(localStorage.getItem("mytodos")) 
+    : [];
 }
+
 //add todo
 const addTodo=(event)=>{
     event.preventDefault();
-    const todoValue=todoInput.value;
+    const todoValue= todoInput.value;
 
     //unique id
     const todoId= Date.now().toString();
+    createTodo(todoId, todoValue);
 
-    createTodo(todoId, todoValue)
+    shoeMessage("todo is added", "success");
+
+//add todo to localStorage
+
+    const todos=getTodosFromLocalStorage();
+    todos.push({todoId, todoValue});
+    localStorage.setItem("mytodos", JSON.stringify(todos));
+
+    todoInput.value="";
     
 };
 
