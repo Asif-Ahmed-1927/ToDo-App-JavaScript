@@ -7,7 +7,7 @@ const messageElement= document.getElementById("message");
 
 //shoeMessage
 
-const shoeMessage=(text, status)=>{
+const showMessage=(text, status)=>{
     messageElement.textContent= text;
     messageElement.classList.add(`bg-${status}`);
     setTimeout(()=>{
@@ -41,7 +41,7 @@ const deleteTodo=(event)=>{
     
 
     todoLists.removeChild(selectedTodo);
-    shoeMessage("todo is deleted", "danger");
+    showMessage("todo is deleted", "danger");
 
     
     let todos=getTodosFromLocalStorage();
@@ -66,7 +66,7 @@ const addTodo=(event)=>{
     const todoId= Date.now().toString();
     createTodo(todoId, todoValue);
 
-    shoeMessage("todo is added", "success");
+    showMessage("todo is added", "success");
 
 //add todo to localStorage
 
